@@ -92,6 +92,16 @@
   </div>
 </div>
 
+<!-- offer -->
+  <div id="seasonalOfferBanner" class="d-none py-2 text-white overflow-hidden" style="background-color: #1B1E55; border-bottom: 1px solid rgba(255,255,255,0.1); margin-top: 80px;">
+  <div class="container d-flex align-items-center">
+    <span class="badge bg-warning text-dark me-3 flex-shrink-0" id="seasonalOfferBadge">Special Offer</span>
+    <div class="overflow-hidden w-100">
+      <marquee scrollamount="5" id="seasonalOfferText" class="mb-0 small fw-medium">Loading active offers...</marquee>
+    </div>
+  </div>
+</div>
+
 <!-- ===== HERO ===== -->
 <header class="hero hero-compact">
   <div class="container">
@@ -374,5 +384,25 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/script.js"></script>
+  <script>
+  document.addEventListener("DOMContentLoaded", async function () {
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzbmrj9Kw0saojguMC9chRNUlgmDkfJPUbWJtbdt976LH9AQjP7SmrBrNyyfU-3718V/exec";
+    try {
+      let response = await fetch(SCRIPT_URL);
+      let offers = await response.json();
+      
+      // Find the first active offer from your spreadsheet database
+      let activeOffer = offers.find(o => o.active === true || o.active === 'TRUE' || o.active === 'true');
+
+      if (activeOffer) {
+        document.getElementById("seasonalOfferBadge").textContent = activeOffer.badge || "Special Offer";
+        document.getElementById("seasonalOfferText").textContent = activeOffer.text;
+        document.getElementById("seasonalOfferBanner").classList.remove("d-none");
+      }
+    } catch (e) {
+      console.log("Could not load seasonal offers.", e);
+    }
+  });
+</script>
 </body>
 </html>
