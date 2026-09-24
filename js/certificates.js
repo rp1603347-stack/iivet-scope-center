@@ -2,7 +2,7 @@ const ISC = (function () {
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  const MAX_FILE_BYTES = 700 * 1024; // stay under Firestore's 1MB document limit
+  const MAX_FILE_BYTES = 700 * 1024; // Keep under Firestore's 1MB document limit
 
   /* ---------------- helpers ---------------- */
 
@@ -10,7 +10,7 @@ const ISC = (function () {
     return (s || "").trim().toLowerCase();
   }
 
-  // Registration number used directly as the primary key document ID
+  // Use Registration Number as the unique primary key document ID
   function makeCertId(registrationNo) {
     return normalize(registrationNo).replace(/[^a-z0-9-]/g, "_");
   }
@@ -66,6 +66,10 @@ const ISC = (function () {
   }
 
   async function addCertificate(record, file) {
+    if (!record.registrationNo) {
+      throw new Error("Registration number is required.");
+    }
+
     const id = makeCertId(record.registrationNo);
     const doc = {
       name: record.name,
@@ -84,7 +88,7 @@ const ISC = (function () {
       doc.fileName = file.name;
     }
 
-    // Using .set() with the unique registration ID prevents duplicate entries
+    // Using .set() with the registration ID prevents duplicate registration numbers
     await db.collection("certificates").doc(id).set(doc);
     return { id, ...doc };
   }
@@ -93,7 +97,6 @@ const ISC = (function () {
     return db.collection("certificates").doc(id).delete();
   }
 
-  // Public lookup using student registration number
   async function findCertificate(registrationNo) {
     const id = makeCertId(registrationNo);
     const snap = await db.collection("certificates").doc(id).get();
