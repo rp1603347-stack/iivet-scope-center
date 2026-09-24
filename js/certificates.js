@@ -1,18 +1,8 @@
-// IIVET SCROP FRANCE — Certificate store + admin auth
-// Backed by Firebase Authentication + Firestore, so GitHub Pages only ever
-// ships static files: no password, no certificate data, and no database
-// lives in this repo. Requires js/firebase-config.js to be loaded first.
-//
-// Admin accounts are NOT self-service on purpose — create the one admin
-// user yourself in Firebase Console → Authentication → Users → Add user.
-// That keeps "who can log in" something only you control, not something
-// baked into the public JS.
-
 const ISC = (function () {
   const auth = firebase.auth();
   const db = firebase.firestore();
 
-  const MAX_FILE_BYTES = 700 * 1024; // stay comfortably under Firestore's 1MB doc limit
+  const MAX_FILE_BYTES = 700 * 1024; // stay under Firestore's 1MB document limit
 
   /* ---------------- helpers ---------------- */
 
@@ -20,11 +10,9 @@ const ISC = (function () {
     return (s || "").trim().toLowerCase();
   }
 
-  // Deterministic composite key: knowing the exact enrollment number AND
-  // DOB is required to reconstruct this ID, which is what makes the
-  // "allow get: if true; allow list: if false;" Firestore rule safe.
-  function makeCertId(enrollmentNo, dob) {
-    return normalize(enrollmentNo).replace(/[^a-z0-9-]/g, "_") + "__" + dob;
+  // Registration number used directly as the primary key document ID
+  function makeCertId(registrationNo) {
+    return normalize(registrationNo).replace(/[^a-z0-9-]/g, "_");
   }
 
   function fileToDataURL(file) {
@@ -72,22 +60,17 @@ const ISC = (function () {
 
   /* ---------------- certificate records ---------------- */
 
-  // Admin dashboard listing — requires an authenticated admin session;
-  // enforced server-side by Firestore rules, not just hidden in the UI.
   function listCertificates() {
     return db.collection("certificates").orderBy("createdAt", "desc").get()
       .then(snap => snap.docs.map(d => ({ id: d.id, ...d.data() })));
   }
 
   async function addCertificate(record, file) {
-    const id = makeCertId(record.enrollmentNo, record.dob);
+    const id = makeCertId(record.registrationNo);
     const doc = {
       name: record.name,
-      enrollmentNo: record.enrollmentNo,
-      dob: record.dob,
+      registrationNo: record.registrationNo,
       course: record.course,
-      issueDate: record.issueDate,
-      grade: record.grade || "",
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       createdBy: (currentUser() && currentUser().email) || "admin"
     };
@@ -101,6 +84,7 @@ const ISC = (function () {
       doc.fileName = file.name;
     }
 
+    // Using .set() with the unique registration ID prevents duplicate entries
     await db.collection("certificates").doc(id).set(doc);
     return { id, ...doc };
   }
@@ -109,10 +93,9 @@ const ISC = (function () {
     return db.collection("certificates").doc(id).delete();
   }
 
-  // Public lookup used by verify.html — reads exactly one document by its
-  // composite ID, which only resolves if both values are correct.
-  async function findCertificate(enrollmentNo, dob) {
-    const id = makeCertId(enrollmentNo, dob);
+  // Public lookup using student registration number
+  async function findCertificate(registrationNo) {
+    const id = makeCertId(registrationNo);
     const snap = await db.collection("certificates").doc(id).get();
     return snap.exists ? { id: snap.id, ...snap.data() } : null;
   }
