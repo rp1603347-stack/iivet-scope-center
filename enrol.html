@@ -28,7 +28,7 @@
         <li class="nav-item"><a class="nav-link" data-page="gallery" href="gallery.html">Gallery</a></li>
         <li class="nav-item"><a class="nav-link" data-page="contact" href="contact.html">Contact</a></li>
         <li class="nav-item"><a class="nav-link" data-page="verify" href="verify.html">Verify Certificate</a></li>
-        <li class="nav-item ms-lg-3 mt-2 mt-lg-0"><a class="btn-brand" href="enrol.html">Enrol Now <i class="bi bi-arrow-up-right"></i></a></li>
+        <li class="nav-item ms-lg-3 mt-2 mt-lg-0"><a class="btn-brand" href="enrol.html">Online Registration <i class="bi bi-arrow-up-right"></i></a></li>
       </ul>
     </div>
   </div>
@@ -37,7 +37,7 @@
 <!-- ===== PAGE HEADER ===== -->
 <header class="page-header">
   <div class="container">
-    <div class="crumbs mb-2"><a href="index.html">Home</a> / Enrollment Form</div>
+    <div class="crumbs mb-2"><a href="index.html">Home</a> / Online Registration</div>
     <h1>Student Application Form</h1>
     <p class="text-white-50 mb-0" style="max-width:42rem">Fill out your official application details below for admission into IIVET education and training programs.</p>
   </div>
@@ -181,7 +181,7 @@
             <!-- SUBMIT BUTTON -->
             <div class="col-12 text-center mt-4">
               <button type="submit" id="submitBtn" class="btn-brand px-5 py-3 fw-bold">
-                Submit Enrollment Application <i class="bi bi-arrow-right ms-2"></i>
+                Submit Registration Application <i class="bi bi-arrow-right ms-2"></i>
               </button>
             </div>
 
@@ -196,7 +196,7 @@
 <div class="position-fixed bottom-0 end-0 p-4" style="z-index:9999">
   <div id="formToast" class="toast align-items-center text-white border-0" style="background:var(--mint)" role="alert">
     <div class="d-flex">
-      <div class="toast-body" id="toastMessage"><i class="bi bi-check-circle me-2"></i>Enrollment successfully submitted!</div>
+      <div class="toast-body" id="toastMessage"><i class="bi bi-check-circle me-2"></i>Online Registration successfully submitted!</div>
       <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
     </div>
   </div>
@@ -297,7 +297,7 @@
       alert("There was an issue submitting your form. Please try again.");
     } finally {
       submitBtn.disabled = false;
-      submitBtn.innerHTML = `Submit Enrollment Application <i class="bi bi-arrow-right ms-2"></i>`;
+      submitBtn.innerHTML = `Submit Registration Application <i class="bi bi-arrow-right ms-2"></i>`;
     }
   });
 </script>
