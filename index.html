@@ -387,16 +387,30 @@
 <script src="js/script.js"></script>
 <script>
   document.addEventListener("DOMContentLoaded", async function () {
-    if (window.__offerPromise) {
-      let offers = await window.__offerPromise;
+    try {
+      // Direct live fetch to ensure no promise-timing issues
+      const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzbmrj9Kw0saojguMC9chRNUlgmDkfJPUbWJtbdt976LH9AQjP7SmrBrNyyfU-3718V/exec";
+      
+      let response = await fetch(SCRIPT_URL);
+      let offers = await response.json();
+      
+      console.log("Fetched offers from Google Sheet:", offers); // Check your F12 Console for this!
+
       if (offers && Array.isArray(offers)) {
-        let activeOffer = offers.find(o => o.active === true || o.active === 'TRUE' || o.active === 'true');
+        // Look for any offer where active is true
+        let activeOffer = offers.find(o => String(o.active).toLowerCase() === 'true');
+
         if (activeOffer) {
           document.getElementById("seasonalOfferBadge").textContent = activeOffer.badge || "Special Offer";
           document.getElementById("seasonalOfferText").textContent = activeOffer.text;
           document.getElementById("seasonalOfferBanner").classList.remove("d-none");
+          console.log("Active offer displayed successfully!");
+        } else {
+          console.log("Connected successfully, but NO offer was found with active = TRUE.");
         }
       }
+    } catch (e) {
+      console.error("Error fetching offers:", e);
     }
   });
 </script>
