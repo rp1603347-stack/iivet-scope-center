@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <title>Verify Certificate | IIVET Scope Center</title>
   <meta name="description"
-    content="Verify an IIVET Scope Center diploma or certificate using your enrollment number and date of birth.">
+    content="Verify an IIVET Scope Center diploma or certificate using your student registration number.">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link
@@ -86,7 +86,7 @@
     <div class="container text-center">
       <span class="eyebrow" style="color:#fff;">–– Certificate Verification</span>
       <h1 class="mt-3 mb-2">Verify your certificate</h1>
-      <h6 style="color:#fff;">Enter your enrollment number and date of birth exactly as given at admission.</h6>
+      <h6 style="color:#fff;">Enter your student registration number exactly as given at admission.</h6>
     </div>
   </header>
 
@@ -95,16 +95,9 @@
       <div class="auth-shell mb-5">
         <form id="verifyForm" novalidate>
           <div class="mb-3">
-            <label class="form-label fw-semibold" for="enrollmentNo">Enrollment Number</label>
-            <input type="text" class="form-control" id="enrollmentNo" placeholder="e.g. ISC-2025-0142" required
+            <label class="form-label fw-semibold" for="registrationNo">Student Registration Number</label>
+            <input type="text" class="form-control" id="registrationNo" placeholder="e.g. ISC-2025-0142" required
               autocomplete="off">
-          </div>
-          <div class="mb-3">
-            <label class="form-label fw-semibold" for="dob">Date of Birth</label>
-            <div class="date-field">
-              <input type="date" class="form-control" id="dob" required>
-              <span class="date-icon"><i class="bi bi-calendar3"></i></span>
-            </div>
           </div>
           <div id="verifyError" class="alert alert-danger py-2 small d-none" role="alert"></div>
           <button type="submit" class="btn-brand w-100 justify-content-center" id="verifyBtn">
@@ -140,7 +133,7 @@
         <div class="cert-card">
           <i class="bi bi-x-circle" style="font-size:2rem;color:var(--coral);"></i>
           <h5 class="mt-2 mb-1">No record found</h5>
-          <p class="text-ink-soft mb-0 small">Double-check your enrollment number and date of birth, or contact the
+          <p class="text-ink-soft mb-0 small">Double-check your student registration number, or contact the
             centre if you believe this is an error.</p>
         </div>
       </div>
@@ -218,11 +211,10 @@
           return;
         }
 
-        var enrollmentNo = document.getElementById('enrollmentNo').value.trim();
-        var dob = document.getElementById('dob').value;
+        var registrationNo = document.getElementById('registrationNo').value.trim();
 
-        if (!enrollmentNo || !dob) {
-          errBox.textContent = 'Please enter both enrollment number and date of birth.';
+        if (!registrationNo) {
+          errBox.textContent = 'Please enter your student registration number.';
           errBox.classList.remove('d-none');
           return;
         }
@@ -234,7 +226,7 @@
 
         var record;
         try {
-          record = await ISC.findCertificate(enrollmentNo, dob);
+          record = await ISC.findCertificate(registrationNo);
         } catch (err) {
           loaderWrap.classList.add('d-none');
           document.body.classList.remove('is-loading');
