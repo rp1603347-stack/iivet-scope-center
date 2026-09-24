@@ -119,12 +119,8 @@
                 <input type="text" class="form-control" id="cName" required>
               </div>
               <div class="mb-3">
-                <label class="form-label fw-semibold small">Student Registration Number</label>
-                <input type="text" class="form-control" id="cRegNo" placeholder="e.g. REG-2025-0142" required>
-              </div>
-              <div class="mb-3">
-                <label class="form-label fw-semibold small">Certificate Number (Primary Key)</label>
-                <input type="text" class="form-control" id="cCertNo" placeholder="e.g. CERT-9988" required>
+                <label class="form-label fw-semibold small">Student Registration Number (Primary Key)</label>
+                <input type="text" class="form-control" id="cRegNo" placeholder="e.g. ISC-2025-0142" required>
               </div>
               <div class="mb-3">
                 <label class="form-label fw-semibold small">Course</label>
@@ -155,7 +151,6 @@
                     <th></th>
                     <th>Name</th>
                     <th>Registration No.</th>
-                    <th>Certificate No.</th>
                     <th>Course</th>
                     <th></th>
                   </tr>
@@ -261,11 +256,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var name = document.getElementById('cName').value.trim();
     var registrationNo = document.getElementById('cRegNo').value.trim();
-    var certificateNo = document.getElementById('cCertNo').value.trim();
     var course = document.getElementById('cCourse').value.trim();
     var file = document.getElementById('cFile').files[0];
 
-    if (!name || !registrationNo || !certificateNo || !course) {
+    if (!name || !registrationNo || !course) {
       errBox.textContent = 'Please fill in all required fields.';
       errBox.classList.remove('d-none');
       return;
@@ -274,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function () {
     saveBtn.disabled = true;
     showLoader('Saving certificate…');
     try {
-      await ISC.addCertificate({ name, registrationNo, certificateNo, course }, file);
+      await ISC.addCertificate({ name, registrationNo, course }, file);
       okBox.textContent = 'Certificate saved for ' + name + '.';
       okBox.classList.remove('d-none');
       this.reset();
@@ -311,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       tr.appendChild(tdThumb);
 
-      [c.name, c.registrationNo, c.certificateNo, c.course].forEach(function (val) {
+      [c.name, c.registrationNo, c.course].forEach(function (val) {
         var td = document.createElement('td');
         td.textContent = val || '—';
         tr.appendChild(td);
